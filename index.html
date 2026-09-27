@@ -12,123 +12,174 @@
       padding: 0;
     }
 
+    :root {
+      color-scheme: light;
+      --navy: #14243a;
+      --muted: #718096;
+      --line: #e2e8f0;
+      --blue: #2864d7;
+      --page: #f5f7fa;
+    }
+
     body {
-      font-family: Arial, "Noto Sans KR", sans-serif;
-      background: #f5f7fb;
-      color: #171923;
+      font-family: "Pretendard", "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+      background: var(--page);
+      color: var(--navy);
+      -webkit-font-smoothing: antialiased;
     }
 
     header {
-      height: 72px;
-      background: #ffffff;
-      border-bottom: 1px solid #e7e9ee;
+      height: 70px;
+      background: rgba(255, 255, 255, .96);
+      border-bottom: 1px solid var(--line);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 6%;
+      padding: 0 max(6%, calc((100% - 1280px) / 2));
       position: sticky;
       top: 0;
       z-index: 10;
     }
 
     .logo {
-      font-size: 21px;
+      font-size: 19px;
       font-weight: 800;
-      letter-spacing: -1px;
+      color: var(--navy);
     }
 
     .logo span {
-      color: #4169e1;
+      color: var(--blue);
     }
 
     .student {
-      font-size: 14px;
-      color: #666;
+      color: #526176;
+      font-size: 12px;
+      font-weight: 650;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 9px 13px;
+      background: #fff;
     }
 
     .hero {
-      background: linear-gradient(135deg, #121a34, #253d82);
-      color: white;
-      padding: 55px 6%;
+      background: #fff;
+      border-bottom: 1px solid var(--line);
+      color: var(--navy);
+      padding: 27px 6% 25px;
     }
 
     .hero-inner {
-      max-width: 1200px;
+      max-width: 1120px;
       margin: auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(230px, 260px);
+      align-items: flex-end;
+      gap: clamp(20px, 2.5vw, 34px);
+    }
+
+    .hero-copy {
+      min-width: 0;
     }
 
     .badge {
-      display: inline-block;
-      background: rgba(255,255,255,.13);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 30px;
-      padding: 7px 13px;
-      font-size: 12px;
-      margin-bottom: 18px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      color: #202124;
+      background: #fffdf8;
+      border: 1px solid #c9b47e;
+      border-radius: 4px;
+      padding: 4px 9px;
+      margin-bottom: 15px;
+    }
+
+    .badge-brand {
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .badge-type {
+      color: #96763a;
+      font-size: 8px;
+      font-weight: 600;
+      line-height: 1;
     }
 
     h1 {
-      font-size: 38px;
-      margin-bottom: 12px;
-      letter-spacing: -2px;
+      font-size: clamp(24px, 2.7vw, 36px);
+      margin-bottom: 11px;
+      letter-spacing: 0;
+      line-height: 1.25;
+      text-wrap: balance;
+      white-space: nowrap;
     }
 
     .hero p {
-      color: #d6ddf5;
-      line-height: 1.7;
+      color: #66758a;
+      line-height: 1.8;
+      font-size: 14px;
+      word-break: keep-all;
     }
 
     .progress-box {
-      margin-top: 28px;
-      max-width: 500px;
+      margin-top: 0;
+      width: 100%;
+      min-width: 0;
+      padding-bottom: 3px;
     }
 
     .progress-text {
       display: flex;
       justify-content: space-between;
-      font-size: 13px;
-      margin-bottom: 9px;
+      color: #526176;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
     }
 
     .progress {
-      height: 7px;
-      background: rgba(255,255,255,.18);
-      border-radius: 10px;
+      height: 6px;
+      background: #e9eef5;
+      border-radius: 999px;
       overflow: hidden;
     }
 
     .progress div {
       width: 3%;
       height: 100%;
-      background: #ffffff;
+      background: var(--blue);
+      border-radius: inherit;
     }
 
     main {
-      max-width: 1200px;
-      margin: 38px auto;
-      padding: 0 25px 80px;
+      max-width: 1280px;
+      margin: 18px auto 0;
+      padding: 0 25px 64px;
       display: grid;
-      grid-template-columns: 1.55fr .85fr;
-      gap: 28px;
+      grid-template-columns: minmax(0, 1.7fr) minmax(310px, .86fr);
+      gap: 22px;
+      align-items: start;
     }
 
     .video-card,
     .curriculum {
       background: white;
-      border-radius: 18px;
-      border: 1px solid #e8eaf0;
-      box-shadow: 0 8px 30px rgba(20,30,60,.05);
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      box-shadow: 0 5px 20px rgba(18, 35, 58, .035);
     }
 
     .video-card {
-      padding: 22px;
+      padding: 14px;
     }
 
     .video-wrap {
       width: 100%;
       aspect-ratio: 16 / 9;
-      background: #111;
-      border-radius: 12px;
+      background: #07111f;
+      border-radius: 5px;
       overflow: hidden;
     }
 
@@ -139,77 +190,86 @@
     }
 
     .lesson-info {
-      padding: 22px 4px 5px;
+      padding: 22px 8px 9px;
     }
 
     .lesson-number {
       font-size: 13px;
-      color: #4169e1;
+      color: var(--blue);
       font-weight: bold;
-      margin-bottom: 8px;
+      font-size: 11px;
+      margin-bottom: 9px;
     }
 
     .lesson-info h2 {
-      font-size: 24px;
-      letter-spacing: -1px;
-      margin-bottom: 10px;
+      font-size: 23px;
+      letter-spacing: 0;
+      margin-bottom: 9px;
     }
 
     .lesson-info p {
-      color: #70747d;
+      color: #68778b;
       font-size: 14px;
       line-height: 1.7;
     }
 
     .curriculum {
-      overflow: hidden;
+      position: sticky;
+      top: 88px;
+      max-height: calc(100vh - 108px);
+      overflow-y: auto;
     }
 
     .curriculum-title {
-      padding: 22px;
-      border-bottom: 1px solid #eee;
+      padding: 20px 21px 17px;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
     }
 
     .curriculum-title h3 {
-      font-size: 19px;
+      font-size: 17px;
       margin-bottom: 5px;
     }
 
     .curriculum-title p {
-      color: #888;
+      color: #8491a2;
       font-size: 12px;
     }
 
     .chapter {
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid var(--line);
     }
 
     .chapter-name {
-      padding: 18px 20px 10px;
-      font-size: 13px;
-      font-weight: 700;
-      color: #555;
+      padding: 15px 20px 9px;
+      font-size: 11px;
+      font-weight: 750;
+      color: #78869a;
     }
 
     .lesson {
-      padding: 15px 20px;
+      padding: 11px 20px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 14px;
+      gap: 11px;
+      font-size: 13px;
+      line-height: 1.45;
+      min-height: 52px;
+      border-left: 3px solid transparent;
     }
 
     .lesson.active {
-      background: #eef3ff;
-      color: #3159cf;
+      background: #eff5ff;
+      color: #1f55b4;
+      border-left-color: var(--blue);
       font-weight: 700;
     }
 
     .play {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #4169e1;
+      width: 29px;
+      height: 29px;
+      border-radius: 6px;
+      background: var(--blue);
       color: white;
       display: flex;
       align-items: center;
@@ -219,10 +279,10 @@
     }
 
     .lock {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      background: #f1f2f4;
+      width: 29px;
+      height: 29px;
+      border-radius: 6px;
+      background: #f0f3f7;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -230,67 +290,149 @@
     }
 
     .disabled {
-      color: #aaa;
+      color: #909bab;
     }
 
     .notice {
-      max-width: 1200px;
-      margin: -45px auto 0;
+      max-width: 1280px;
+      margin: 16px auto 0;
       padding: 0 25px;
     }
 
     .notice-inner {
-      background: #fff;
-      padding: 15px 20px;
-      border-radius: 12px;
+      background: #f0f5fc;
+      padding: 13px 17px;
+      border-radius: 6px;
       font-size: 13px;
-      color: #60646d;
-      border: 1px solid #e7e9ef;
+      color: #52647d;
+      border: 1px solid #e0e9f5;
+      line-height: 1.6;
     }
 
     @media(max-width: 850px) {
       main {
         grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start;
+        gap: 23px;
       }
 
       h1 {
-        font-size: 29px;
+        white-space: normal;
+      }
+
+      .progress-box {
+        width: min(100%, 480px);
+        flex-basis: auto;
+      }
+
+      .curriculum {
+        position: static;
+        max-height: none;
       }
 
       .hero {
-        padding: 40px 25px 65px;
+        padding: 32px 25px;
       }
 
       header {
         padding: 0 22px;
       }
     }
+
+    @media(max-width: 520px) {
+      header {
+        height: 62px;
+        padding: 0 17px;
+      }
+
+      .logo {
+        font-size: 17px;
+      }
+
+      .student {
+        padding: 7px 9px;
+        font-size: 10px;
+      }
+
+      .hero {
+        padding: 27px 18px 25px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .hero p {
+        font-size: 13px;
+      }
+
+      .notice {
+        margin-top: 12px;
+        padding: 0 15px;
+      }
+
+      .notice-inner {
+        font-size: 12px;
+      }
+
+      main {
+        margin-top: 14px;
+        padding: 0 15px 40px;
+      }
+
+      .video-card {
+        padding: 9px;
+      }
+
+      .lesson-info {
+        padding: 19px 6px 7px;
+      }
+
+      .lesson-info h2 {
+        font-size: 21px;
+      }
+    }
+   .logo img {
+    width: 90px;
+    height: 70px;
+    object-fit: contain;
+    display: block;
+}
   </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo"><span>SUPER</span> 이끌림</div>
+<div class="logo">
+  <img src="logo.png" alt="수퍼이끌림 로고">
+</div>
   <div class="student">수강생 전용 클래스</div>
 </header>
 
 <section class="hero">
   <div class="hero-inner">
 
-    <div class="badge">SUPER IGGLEAM ONLINE CLASS</div>
+    <div class="hero-copy">
+      <div class="badge"><span class="badge-brand">SUPER THREADS</span><span class="badge-type">ONLINE CLASS</span></div>
 
-    <h1>SNS 수익화 실전 클래스</h1>
+      <h1>SNS 수익화 실전 클래스</h1>
 
-    <p>
-      스레드부터 전문계정, 유튜브, 네이버까지.<br>
-      실제 운영을 통해 배우는 SNS 수익화 강의
-    </p>
+      <p>
+        스레드부터 X, 전문계정, 유튜브, 네이버까지.<br>
+        실제 운영을 통해 배우는 SNS 수익화 강의
+      </p>
+    </div>
 
     <div class="progress-box">
       <div class="progress-text">
         <span>나의 학습 진행률</span>
-        <span>1 / 36강</span>
+        <span>1 / 37강</span>
       </div>
 
       <div class="progress">
@@ -323,7 +465,7 @@
     <div class="lesson-info">
       <div class="lesson-number">CHAPTER 01 · LESSON 01</div>
 
-      <h2>월 200 SNS 부업</h2>
+      <h2>멘탈잡기, 운영법 소개</h2>
 
       <p>
         SNS 제휴 마케팅 계정을 시작하기 전에 알아야 할
@@ -338,83 +480,103 @@
 
     <div class="curriculum-title">
       <h3>전체 커리큘럼</h3>
-      <p>총 5개 챕터 · 36강</p>
+      <p>총 5개 챕터 · 37강</p>
     </div>
 
     <div class="chapter">
-
-      <div class="chapter-name">
-        CHAPTER 1 · 스레드 쿠파스 강의
-      </div>
-
-      <div class="lesson active">
+      <div class="chapter-name">CHAPTER 1 · 제휴마케팅 계정 — 14강</div>
+      <div class="lesson active" data-video-id="1hNbguLQjgWB_3SI1aRfdwm6-av2UXQlc" data-lesson-number="1" data-lesson-title="멘탈잡기, 운영법 소개" role="button" tabindex="0">
         <div class="play">▶</div>
-        <div>01. 월 200 SNS 부업</div>
+        <div>01. 멘탈잡기, 운영법 소개</div>
       </div>
-
-      <div class="lesson disabled">
-        <div class="lock">🔒</div>
-        <div>02. 강의 준비중</div>
-      </div>
-
-      <div class="lesson disabled">
-        <div class="lock">🔒</div>
-        <div>03. 강의 준비중</div>
-      </div>
-
+      <div class="lesson" data-video-id="1dsA_gGgnezClyWfXWt_buEV_BjobZk3N" data-lesson-number="2" data-lesson-title="제휴마케팅 계정 세팅법" role="button" tabindex="0"><div class="play">▶</div><div>02. 제휴마케팅 계정 세팅법</div></div>
+      <div class="lesson" data-video-id="1dOOelYL9it7X1fQ-XP1SXXLxF0nD58De" data-lesson-number="3" data-lesson-title="프로필세팅, 인포크링크 세팅" role="button" tabindex="0"><div class="play">▶</div><div>03. 프로필세팅, 인포크링크 세팅</div></div>
+      <div class="lesson" data-video-id="16uNDntST69gmUciJNjxz38TV-oyvN9wu" data-lesson-number="4" data-lesson-title="업로드할 동영상 받는 방법, 선택 방법" role="button" tabindex="0"><div class="play">▶</div><div>04. 업로드할 동영상 받는 방법, 선택 방법</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>05. 계정 정지당하지 않는 방법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>06. 쿠팡파트너스 가입 및 소싱사이트 소개 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>07. 저작권 파괴하기(AI 이미지 변형) · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>08. 저작권 파괴하기 심화 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>09. 소싱 쉽게 하는 방법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>10. 글 잘쓰는 방법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>11. 게시글 및 댓글 작성방법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>12. 소싱 좋은예/나쁜예 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>13. 잘 터지는 물건 고르기 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>14. 오프라인 소싱법 · 강의 준비중</div></div>
     </div>
 
-
     <div class="chapter">
-      <div class="chapter-name">
-        CHAPTER 2 · 전문계정 강의
-      </div>
-
-      <div class="lesson disabled">
-        <div class="lock">🔒</div>
-        <div>강의 준비중</div>
-      </div>
+      <div class="chapter-name">CHAPTER 2 · 전문계정(X, 스레드) — 6강</div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 전문계정이란 무엇인가? · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>02. 스레드 스하리, 반하리의 함정 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>03. X 수익화는 이렇게 이루어진다 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>04. X 계정 키우는 노하우 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>05. X와 스레드 동시 운영방법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>06. AI 생성기로 3분안에 X, 스레드 동시발행 · 강의 준비중</div></div>
     </div>
 
-
     <div class="chapter">
-      <div class="chapter-name">
-        CHAPTER 3 · 유튜브 운영하기
-      </div>
-
-      <div class="lesson disabled">
-        <div class="lock">🔒</div>
-        <div>강의 준비중</div>
-      </div>
+      <div class="chapter-name">CHAPTER 3 · 유튜브 운영하기 — 7강</div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 유튜브 운영하기 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>02. 로고만들기, 5분 쇼츠 제작 프로그램 사용법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>03. 쇼츠 5분만에 만들기 시연 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>04. 롱폼 대본 만들기(AI) · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>05. 롱폼 이미지 생성 방법(AI) · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>06. 롱폼 나레이션 생성방법(AI) · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>07. 롱폼 만들기 시연 · 강의 준비중</div></div>
     </div>
 
-
     <div class="chapter">
-      <div class="chapter-name">
-        CHAPTER 4 · 네이버 쇼핑커넥트
-      </div>
-
-      <div class="lesson disabled">
-        <div class="lock">🔒</div>
-        <div>강의 준비중</div>
-      </div>
+      <div class="chapter-name">CHAPTER 4 · 네이버 쇼핑 커넥트 운영 — 4강</div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 네이버 쇼핑 커넥트란? · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>02. 네이버 블로그 작성법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>03. 키워드 분석 및 삽입법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>04. 쇼핑커넥트 적용하기 · 강의 준비중</div></div>
     </div>
 
-
     <div class="chapter">
-      <div class="chapter-name">
-        CHAPTER 5 · 보너스 강의
-      </div>
-
-      <div class="lesson disabled">
-        <div class="lock">🔒</div>
-        <div>강의 준비중</div>
-      </div>
+      <div class="chapter-name">CHAPTER 5 · 보너스 강의 — 6강</div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 전자책 쓰는 방법, 판매방법 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>02. 나만의 챗봇 만드는 방법 시연 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>03. 나만의 소싱 챗봇 만들기 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>04. 클릭을 부르는 첫줄 후킹 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>05. 터지는 물품은 따로 있다 · 강의 준비중</div></div>
+      <div class="lesson disabled"><div class="lock">🔒</div><div>06. 스토리텔링의 중요성 · 강의 준비중</div></div>
     </div>
 
   </aside>
 
 </main>
+
+<script>
+  const curriculum = document.querySelector('.curriculum');
+  const videoFrame = document.querySelector('.video-wrap iframe');
+  const lessonNumber = document.querySelector('.lesson-number');
+  const lessonTitle = document.querySelector('.lesson-info h2');
+
+  function selectLesson(lesson) {
+    if (!lesson || !lesson.dataset.videoId) return;
+
+    curriculum.querySelectorAll('.lesson.active').forEach(activeLesson => {
+      activeLesson.classList.remove('active');
+    });
+    lesson.classList.add('active');
+    videoFrame.src = `https://drive.google.com/file/d/${lesson.dataset.videoId}/preview`;
+    lessonNumber.textContent = `CHAPTER 01 · LESSON ${lesson.dataset.lessonNumber.padStart(2, '0')}`;
+    lessonTitle.textContent = lesson.dataset.lessonTitle;
+  }
+
+  curriculum.addEventListener('click', event => {
+    selectLesson(event.target.closest('.lesson[data-video-id]'));
+  });
+
+  curriculum.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    const lesson = event.target.closest('.lesson[data-video-id]');
+    if (!lesson) return;
+    event.preventDefault();
+    selectLesson(lesson);
+  });
+</script>
 
 </body>
 </html>
