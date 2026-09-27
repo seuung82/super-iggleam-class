@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SUPER 이끌림 | 온라인 클래스</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: #f5f7fb;
+      color: #171923;
+    }
+
+    header {
+      height: 72px;
+      background: #ffffff;
+      border-bottom: 1px solid #e7e9ee;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6%;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .logo span {
+      color: #4169e1;
+    }
+
+    .student {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #121a34, #253d82);
+      color: white;
+      padding: 55px 6%;
+    }
+
+    .hero-inner {
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255,255,255,.13);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 30px;
+      padding: 7px 13px;
+      font-size: 12px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 38px;
+      margin-bottom: 12px;
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      color: #d6ddf5;
+      line-height: 1.7;
+    }
+
+    .progress-box {
+      margin-top: 28px;
+      max-width: 500px;
+    }
+
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 9px;
+    }
+
+    .progress {
+      height: 7px;
+      background: rgba(255,255,255,.18);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .progress div {
+      width: 3%;
+      height: 100%;
+      background: #ffffff;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 38px auto;
+      padding: 0 25px 80px;
+      display: grid;
+      grid-template-columns: 1.55fr .85fr;
+      gap: 28px;
+    }
+
+    .video-card,
+    .curriculum {
+      background: white;
+      border-radius: 18px;
+      border: 1px solid #e8eaf0;
+      box-shadow: 0 8px 30px rgba(20,30,60,.05);
+    }
+
+    .video-card {
+      padding: 22px;
+    }
+
+    .video-wrap {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .lesson-info {
+      padding: 22px 4px 5px;
+    }
+
+    .lesson-number {
+      font-size: 13px;
+      color: #4169e1;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .lesson-info h2 {
+      font-size: 24px;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+
+    .lesson-info p {
+      color: #70747d;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .curriculum {
+      overflow: hidden;
+    }
+
+    .curriculum-title {
+      padding: 22px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .curriculum-title h3 {
+      font-size: 19px;
+      margin-bottom: 5px;
+    }
+
+    .curriculum-title p {
+      color: #888;
+      font-size: 12px;
+    }
+
+    .chapter {
+      border-bottom: 1px solid #eee;
+    }
+
+    .chapter-name {
+      padding: 18px 20px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .lesson {
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+    }
+
+    .lesson.active {
+      background: #eef3ff;
+      color: #3159cf;
+      font-weight: 700;
+    }
+
+    .play {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #4169e1;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .lock {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #f1f2f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .disabled {
+      color: #aaa;
+    }
+
+    .notice {
+      max-width: 1200px;
+      margin: -45px auto 0;
+      padding: 0 25px;
+    }
+
+    .notice-inner {
+      background: #fff;
+      padding: 15px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      color: #60646d;
+      border: 1px solid #e7e9ef;
+    }
+
+    @media(max-width: 850px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 29px;
+      }
+
+      .hero {
+        padding: 40px 25px 65px;
+      }
+
+      header {
+        padding: 0 22px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo"><span>SUPER</span> 이끌림</div>
+  <div class="student">수강생 전용 클래스</div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+
+    <div class="badge">SUPER IGGLEAM ONLINE CLASS</div>
+
+    <h1>SNS 수익화 실전 클래스</h1>
+
+    <p>
+      스레드부터 전문계정, 유튜브, 네이버까지.<br>
+      실제 운영을 통해 배우는 SNS 수익화 강의
+    </p>
+
+    <div class="progress-box">
+      <div class="progress-text">
+        <span>나의 학습 진행률</span>
+        <span>1 / 36강</span>
+      </div>
+
+      <div class="progress">
+        <div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="notice">
+  <div class="notice-inner">
+    🔒 본 강의는 구매한 수강생에게만 제공됩니다.
+    영상 재생에는 승인된 Google 계정 로그인이 필요할 수 있습니다.
+  </div>
+</div>
+
+<main>
+
+  <section class="video-card">
+
+    <div class="video-wrap">
+      <iframe
+        src="https://drive.google.com/file/d/1hNbguLQjgWB_3SI1aRfdwm6-av2UXQlc/preview"
+        allow="autoplay"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="lesson-info">
+      <div class="lesson-number">CHAPTER 01 · LESSON 01</div>
+
+      <h2>월 200 SNS 부업</h2>
+
+      <p>
+        SNS 제휴 마케팅 계정을 시작하기 전에 알아야 할
+        전체적인 방향과 운영 방법을 소개합니다.
+      </p>
+    </div>
+
+  </section>
+
+
+  <aside class="curriculum">
+
+    <div class="curriculum-title">
+      <h3>전체 커리큘럼</h3>
+      <p>총 5개 챕터 · 36강</p>
+    </div>
+
+    <div class="chapter">
+
+      <div class="chapter-name">
+        CHAPTER 1 · 스레드 쿠파스 강의
+      </div>
+
+      <div class="lesson active">
+        <div class="play">▶</div>
+        <div>01. 월 200 SNS 부업</div>
+      </div>
+
+      <div class="lesson disabled">
+        <div class="lock">🔒</div>
+        <div>02. 강의 준비중</div>
+      </div>
+
+      <div class="lesson disabled">
+        <div class="lock">🔒</div>
+        <div>03. 강의 준비중</div>
+      </div>
+
+    </div>
+
+
+    <div class="chapter">
+      <div class="chapter-name">
+        CHAPTER 2 · 전문계정 강의
+      </div>
+
+      <div class="lesson disabled">
+        <div class="lock">🔒</div>
+        <div>강의 준비중</div>
+      </div>
+    </div>
+
+
+    <div class="chapter">
+      <div class="chapter-name">
+        CHAPTER 3 · 유튜브 운영하기
+      </div>
+
+      <div class="lesson disabled">
+        <div class="lock">🔒</div>
+        <div>강의 준비중</div>
+      </div>
+    </div>
+
+
+    <div class="chapter">
+      <div class="chapter-name">
+        CHAPTER 4 · 네이버 쇼핑커넥트
+      </div>
+
+      <div class="lesson disabled">
+        <div class="lock">🔒</div>
+        <div>강의 준비중</div>
+      </div>
+    </div>
+
+
+    <div class="chapter">
+      <div class="chapter-name">
+        CHAPTER 5 · 보너스 강의
+      </div>
+
+      <div class="lesson disabled">
+        <div class="lock">🔒</div>
+        <div>강의 준비중</div>
+      </div>
+    </div>
+
+  </aside>
+
+</main>
+
+</body>
+</html>
