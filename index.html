@@ -42,6 +42,10 @@
       padding: 24px;
     }
 
+    body.authenticated #login-gate {
+      display: none;
+    }
+
     .login-panel {
       width: min(100%, 420px);
       padding: 30px 24px;
@@ -704,6 +708,7 @@
   }
 
   function handleGoogleCredential(response) {
+    console.log('[Google Login] Credential callback received.');
     try {
       const encodedPayload = response.credential.split('.')[1];
       const base64Payload = encodedPayload.replace(/-/g, '+').replace(/_/g, '/');
@@ -719,7 +724,9 @@
       document.body.classList.add('authenticated');
       loginStatus.textContent = '';
       startWatermarkSchedule();
+      console.log('[Google Login] Sign-in succeeded.', { name: profile.name || profile.email, email: profile.email });
     } catch (error) {
+      console.log('[Google Login] Sign-in failed while processing credentials.', error);
       loginStatus.textContent = 'Google 계정 정보를 확인하지 못했습니다. 다시 로그인해 주세요.';
     }
   }
@@ -732,7 +739,12 @@
 
     google.accounts.id.initialize({
       client_id: CLIENT_ID,
-      callback: handleGoogleCredential
+      callback: handleGoogleCredential,
+      use_fedcm_for_button: true,
+      error_callback: error => {
+        console.log('[Google Login] Sign-in UI failed.', error);
+        loginStatus.textContent = 'Google 로그인 창을 열지 못했습니다. 브라우저의 팝업 설정을 확인해 주세요.';
+      }
     });
     google.accounts.id.renderButton(document.getElementById('google-signin-button'), {
       type: 'standard',
@@ -762,6 +774,7 @@
   googleIdentityScript.async = true;
   googleIdentityScript.onload = initializeGoogleLogin;
   googleIdentityScript.onerror = () => {
+    console.log('[Google Login] Failed to load Google Identity Services.');
     loginStatus.textContent = 'Google 로그인 서비스를 불러오지 못했습니다. 페이지를 새로고침해 주세요.';
   };
   document.head.appendChild(googleIdentityScript);
