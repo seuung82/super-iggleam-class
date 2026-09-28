@@ -31,10 +31,6 @@
     body:not(.authenticated) > .hero,
     body:not(.authenticated) > .notice,
     body:not(.authenticated) > main,
-    body:not(.authenticated) > #email-watermark {
-      display: none;
-    }
-
     #login-gate {
       min-height: 100vh;
       display: grid;
@@ -112,22 +108,44 @@
       margin-left: 8px;
     }
 
+    .video-wrap {
+      position: relative;
+    }
+
     #email-watermark:not([hidden]) {
-      position: fixed;
-      z-index: 20;
-      left: 50%;
-      max-width: calc(100vw - 32px);
-      padding: 7px 12px;
-      transform: translateX(-50%);
+      position: absolute;
+      z-index: 2;
+      max-width: calc(100% - 24px);
+      padding: 7px 10px;
       border-radius: 4px;
-      background: rgba(7, 17, 31, .72);
+      background: rgba(0, 0, 0, .78);
       color: #fff;
-      font-size: 12px;
+      font-size: 11px;
       line-height: 1.4;
-      text-align: center;
+      text-align: left;
       overflow-wrap: anywhere;
       opacity: .6;
       pointer-events: none;
+    }
+
+    #email-watermark.watermark-top-left {
+      top: 12px;
+      left: 12px;
+    }
+
+    #email-watermark.watermark-top-right {
+      top: 12px;
+      right: 12px;
+    }
+
+    #email-watermark.watermark-bottom-left {
+      bottom: 12px;
+      left: 12px;
+    }
+
+    #email-watermark.watermark-bottom-right {
+      right: 12px;
+      bottom: 12px;
     }
 
     header {
@@ -592,6 +610,7 @@
         allow="autoplay"
         allowfullscreen>
       </iframe>
+      <div id="email-watermark" hidden aria-hidden="true"></div>
     </div>
 
     <div class="lesson-info">
@@ -679,32 +698,49 @@
 
 </main>
 
-<div id="email-watermark" hidden aria-hidden="true"></div>
-
 <script>
   const CLIENT_ID = '574191607948-cj3pstcqg74gsm5mm2no1kp1v1i7jdk8.apps.googleusercontent.com';
   const loginStatus = document.getElementById('login-status');
   const signOutButton = document.getElementById('sign-out');
   const watermark = document.getElementById('email-watermark');
+  const watermarkPositions = ['watermark-top-left', 'watermark-top-right', 'watermark-bottom-left', 'watermark-bottom-right'];
+  let signedInName = '';
   let signedInEmail = '';
   let watermarkInterval;
   let watermarkTimeout;
 
-  function showEmailWatermark() {
-    const showAtTop = Math.random() < 0.5;
-    watermark.textContent = signedInEmail;
-    watermark.style.top = showAtTop ? '86px' : 'auto';
-    watermark.style.bottom = showAtTop ? 'auto' : '24px';
+  function maskEmail(email) {
+    const [localPart, domain] = email.split('@');
+    const visiblePrefix = localPart.slice(0, Math.min(2, localPart.length));
+    return `${visiblePrefix}***@${domain}`;
+  }
+
+  function showEmailWatermark(duration = 6000) {
+    const position = watermarkPositions[Math.floor(Math.random() * watermarkPositions.length)];
+    watermark.classList.remove(...watermarkPositions);
+    watermark.classList.add(position);
+    watermark.innerHTML = '';
+    const nameLine = document.createElement('span');
+    nameLine.textContent = signedInName;
+    const emailLine = document.createElement('span');
+    emailLine.textContent = maskEmail(signedInEmail);
+    const noticeLine = document.createElement('span');
+    noticeLine.textContent = '수강생 전용 · 무단 배포 금지';
+    [nameLine, emailLine, noticeLine].forEach(line => {
+      line.style.display = 'block';
+      watermark.appendChild(line);
+    });
     watermark.hidden = false;
     clearTimeout(watermarkTimeout);
     watermarkTimeout = setTimeout(() => {
       watermark.hidden = true;
-    }, 5000);
+    }, duration);
   }
 
   function startWatermarkSchedule() {
     clearInterval(watermarkInterval);
-    watermarkInterval = setInterval(showEmailWatermark, 4 * 60 * 1000);
+    showEmailWatermark(10000);
+    watermarkInterval = setInterval(() => showEmailWatermark(6000), 4 * 60 * 1000);
   }
 
   function handleGoogleCredential(response) {
@@ -718,13 +754,14 @@
         throw new Error('Verified Google email is required.');
       }
 
+      signedInName = profile.name || profile.email;
       signedInEmail = profile.email;
-      document.getElementById('student-name').textContent = profile.name || profile.email;
+      document.getElementById('student-name').textContent = signedInName;
       document.getElementById('student-email').textContent = profile.email;
       document.body.classList.add('authenticated');
       loginStatus.textContent = '';
       startWatermarkSchedule();
-      console.log('[Google Login] Sign-in succeeded.', { name: profile.name || profile.email, email: profile.email });
+      console.log('[Google Login] Sign-in succeeded.', { name: signedInName, email: signedInEmail });
     } catch (error) {
       console.log('[Google Login] Sign-in failed while processing credentials.', error);
       loginStatus.textContent = 'Google 계정 정보를 확인하지 못했습니다. 다시 로그인해 주세요.';
@@ -762,6 +799,7 @@
     clearInterval(watermarkInterval);
     clearTimeout(watermarkTimeout);
     watermark.hidden = true;
+    signedInName = '';
     signedInEmail = '';
     document.body.classList.remove('authenticated');
     document.getElementById('student-name').textContent = '';
