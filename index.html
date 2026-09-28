@@ -115,39 +115,28 @@
       position: relative;
     }
 
+    #email-watermark[hidden] {
+      display: none;
+    }
+
     #email-watermark:not([hidden]) {
       position: absolute;
       z-index: 9999;
-      top: 14px;
+      bottom: 14px;
       left: 14px;
       max-width: calc(100% - 24px);
-      padding: 7px 10px;
+      padding: 4px 8px;
       border-radius: 4px;
       background: rgba(0, 0, 0, .78);
       color: #fff;
-      font-size: 11px;
-      line-height: 1.4;
+      font-size: 10px;
+      line-height: 1.25;
       text-align: left;
-      overflow-wrap: anywhere;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       opacity: .6;
       pointer-events: none;
-    }
-
-    #email-watermark.watermark-top-right {
-      right: 14px;
-      left: auto;
-    }
-
-    #email-watermark.watermark-bottom-left {
-      top: auto;
-      bottom: 14px;
-    }
-
-    #email-watermark.watermark-bottom-right {
-      top: auto;
-      right: 14px;
-      bottom: 14px;
-      left: auto;
     }
 
     header {
@@ -705,7 +694,6 @@
   const loginStatus = document.getElementById('login-status');
   const signOutButton = document.getElementById('sign-out');
   const watermark = document.getElementById('email-watermark');
-  const watermarkPositions = ['watermark-top-left', 'watermark-top-right', 'watermark-bottom-left', 'watermark-bottom-right'];
   let signedInName = '';
   let signedInEmail = '';
   let watermarkInterval;
@@ -717,35 +705,23 @@
     return `${visiblePrefix}***@${domain}`;
   }
 
-  function showEmailWatermark(position) {
-    watermark.classList.remove(...watermarkPositions);
-    watermark.classList.add(`watermark-${position}`);
-    watermark.innerHTML = '';
-    const nameLine = document.createElement('span');
-    nameLine.textContent = signedInName;
-    const emailLine = document.createElement('span');
-    emailLine.textContent = maskEmail(signedInEmail);
-    const noticeLine = document.createElement('span');
-    noticeLine.textContent = '수강생 전용 · 무단 배포 금지';
-    [nameLine, emailLine, noticeLine].forEach(line => {
-      line.style.display = 'block';
-      watermark.appendChild(line);
-    });
+  function hideEmailWatermark() {
+    watermark.hidden = true;
+    watermarkTimeout = null;
+  }
+
+  function showEmailWatermark() {
+    watermark.textContent = `${signedInName} · ${maskEmail(signedInEmail)} · 수강생 전용 · 무단 배포 금지`;
     watermark.hidden = false;
     clearTimeout(watermarkTimeout);
-    watermarkTimeout = setTimeout(() => {
-      watermark.hidden = true;
-    }, 6000);
+    watermarkTimeout = setTimeout(hideEmailWatermark, 6000);
   }
 
   function startWatermarkSchedule() {
     clearInterval(watermarkInterval);
     clearTimeout(watermarkTimeout);
-    showEmailWatermark('bottom-left');
-    watermarkInterval = setInterval(() => {
-      const randomPosition = watermarkPositions[Math.floor(Math.random() * watermarkPositions.length)];
-      showEmailWatermark(randomPosition.replace('watermark-', ''));
-    }, 4 * 60 * 1000);
+    showEmailWatermark();
+    watermarkInterval = setInterval(showEmailWatermark, 240000);
   }
 
   function handleGoogleCredential(response) {
@@ -803,7 +779,7 @@
   signOutButton.addEventListener('click', () => {
     clearInterval(watermarkInterval);
     clearTimeout(watermarkTimeout);
-    watermark.hidden = true;
+    hideEmailWatermark();
     signedInName = '';
     signedInEmail = '';
     document.body.classList.remove('authenticated');
