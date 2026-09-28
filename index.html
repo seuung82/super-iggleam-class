@@ -717,20 +717,76 @@
     const auth = authSdk.getAuth(app);
     const db = firestoreSdk.getFirestore(app);
 
-    return async googleIdToken => {
+    return async (googleIdToken, googleEmail) => {
       const credential = authSdk.GoogleAuthProvider.credential(googleIdToken);
-      const { user } = await authSdk.signInWithCredential(auth, credential);
-      const email = user.email?.trim();
-      if (!email) throw new Error('Firebase Authentication returned no email.');
+      let userCredential;
+      try {
+        userCredential = await authSdk.signInWithCredential(auth, credential);
+      } catch (error) {
+        console.error('[Firebase Auth] Google credential exchange failed.', {
+          code: error.code,
+          message: error.message,
+          gisEmail: googleEmail
+        }, error);
+        throw error;
+      }
+
+      const currentUser = auth.currentUser;
+      console.info('[Firebase Auth] Sign-in result.', {
+        currentUserExists: Boolean(currentUser),
+        uid: currentUser?.uid || null,
+        currentUserEmail: currentUser?.email || null,
+        credentialUserEmail: userCredential.user?.email || null,
+        gisEmail: googleEmail
+      });
+
+      if (!currentUser) {
+        const error = new Error('Firebase Authentication completed without auth.currentUser.');
+        console.error('[Firebase Auth] currentUser is missing after sign-in.', error);
+        throw error;
+      }
+
+      const email = currentUser.email;
+      if (!email) {
+        const error = new Error('Firebase Authentication returned no currentUser.email.');
+        console.error('[Firebase Auth] currentUser has no email.', { uid: currentUser.uid }, error);
+        throw error;
+      }
+
+      if (googleEmail && email.toLowerCase() !== googleEmail.toLowerCase()) {
+        const error = new Error('Firebase currentUser.email does not match the Google Identity credential email.');
+        console.error('[Firebase Auth] Google identity mismatch.', {
+          currentUserEmail: email,
+          gisEmail: googleEmail,
+          uid: currentUser.uid
+        }, error);
+        await authSdk.signOut(auth);
+        throw error;
+      }
+
+      const studentPath = `students/${email}`;
+      console.info('[Firestore Approval] Reading student document.', {
+        path: studentPath,
+        currentUserEmail: email,
+        uid: currentUser.uid
+      });
 
       try {
         const studentDocument = await firestoreSdk.getDoc(firestoreSdk.doc(db, 'students', email));
+        console.info('[Firestore Approval] Student document read completed.', {
+          path: studentPath,
+          exists: studentDocument.exists()
+        });
         if (!studentDocument.exists()) {
           await authSdk.signOut(auth);
           return { approved: false, email };
         }
 
         const student = studentDocument.data();
+        console.info('[Firestore Approval] Approval field checked.', {
+          path: studentPath,
+          approved: student.approved === true
+        });
         if (student.approved !== true) {
           await authSdk.signOut(auth);
           return { approved: false, email };
@@ -738,6 +794,14 @@
 
         return { approved: true, email, name: student.name };
       } catch (error) {
+        console.error('[Firestore Approval] Student document lookup failed.', {
+          path: studentPath,
+          currentUserEmail: email,
+          uid: currentUser.uid,
+          code: error.code,
+          message: error.message,
+          permissionDenied: error.code === 'permission-denied'
+        }, error);
         await authSdk.signOut(auth).catch(() => {});
         throw error;
       }
@@ -812,7 +876,7 @@
       }
 
       const verifyStudent = await window.firebaseApprovalReady;
-      const approval = await verifyStudent(response.credential);
+      const approval = await verifyStudent(response.credential, profile.email);
       if (!approval.approved) {
         signedInName = '';
         signedInEmail = '';
@@ -839,7 +903,10 @@
       signedInName = '';
       signedInEmail = '';
       loginStatus.textContent = '수강 승인 확인에 실패했습니다. 잠시 후 다시 시도해주세요.';
-      console.log('[Firebase Approval] Authentication or approval lookup failed.', error);
+      console.error('[Firebase Approval] Entry denied after authentication or lookup failure.', {
+        code: error.code,
+        message: error.message
+      }, error);
     }
   }
 
