@@ -696,7 +696,8 @@
   const watermark = document.getElementById('email-watermark');
   let signedInName = '';
   let signedInEmail = '';
-  let watermarkTimeout;
+  let watermarkHideTimeout;
+  let watermarkCycleTimeout;
 
   function maskEmail(email) {
     const [localPart, domain] = email.split('@');
@@ -704,26 +705,43 @@
     return `${visiblePrefix}***@${domain}`;
   }
 
-  function hideEmailWatermark() {
+  function hideWatermark() {
     watermark.hidden = true;
-    watermarkTimeout = null;
+    clearTimeout(watermarkHideTimeout);
+    watermarkHideTimeout = null;
+    clearTimeout(watermarkCycleTimeout);
+    watermarkCycleTimeout = null;
     if (signedInEmail && document.body.classList.contains('authenticated')) {
-      watermarkTimeout = setTimeout(showEmailWatermark, 240000);
+      watermarkCycleTimeout = setTimeout(showWatermark, 240000);
     }
   }
 
-  function showEmailWatermark() {
+  function showWatermark() {
+    if (!signedInEmail || !document.body.classList.contains('authenticated')) {
+      watermark.hidden = true;
+      return;
+    }
+
     watermark.textContent = `${signedInName} · ${maskEmail(signedInEmail)} · 수강생 전용 · 무단 배포 금지`;
     watermark.hidden = false;
-    clearTimeout(watermarkTimeout);
-    watermarkTimeout = setTimeout(hideEmailWatermark, 6000);
+    clearTimeout(watermarkHideTimeout);
+    clearTimeout(watermarkCycleTimeout);
+    watermarkCycleTimeout = null;
+    watermarkHideTimeout = setTimeout(hideWatermark, 6000);
   }
 
-  function startWatermarkSchedule() {
-    clearTimeout(watermarkTimeout);
-    watermarkTimeout = null;
+  function restartWatermarkCycle() {
+    clearTimeout(watermarkHideTimeout);
+    clearTimeout(watermarkCycleTimeout);
+    watermarkHideTimeout = null;
+    watermarkCycleTimeout = null;
     watermark.hidden = true;
-    showEmailWatermark();
+
+    const hasPlayableLesson = document.querySelector('.lesson.active[data-video-id]');
+    const hasVideoSource = document.querySelector('.video-wrap iframe')?.getAttribute('src');
+    if (!signedInEmail || !document.body.classList.contains('authenticated') || !hasPlayableLesson || !hasVideoSource) return;
+
+    showWatermark();
   }
 
   function handleGoogleCredential(response) {
@@ -743,7 +761,7 @@
       document.getElementById('student-email').textContent = profile.email;
       document.body.classList.add('authenticated');
       loginStatus.textContent = '';
-      startWatermarkSchedule();
+      restartWatermarkCycle();
       console.log('[Google Login] Sign-in succeeded.', { name: signedInName, email: signedInEmail });
     } catch (error) {
       console.log('[Google Login] Sign-in failed while processing credentials.', error);
@@ -779,8 +797,10 @@
   }
 
   signOutButton.addEventListener('click', () => {
-    clearTimeout(watermarkTimeout);
-    watermarkTimeout = null;
+    clearTimeout(watermarkHideTimeout);
+    clearTimeout(watermarkCycleTimeout);
+    watermarkHideTimeout = null;
+    watermarkCycleTimeout = null;
     watermark.hidden = true;
     signedInName = '';
     signedInEmail = '';
@@ -815,10 +835,10 @@
     });
     lesson.classList.add('active');
     videoFrame.src = `https://drive.google.com/file/d/${lesson.dataset.videoId}/preview`;
+    restartWatermarkCycle();
     const chapterNumber = Array.from(curriculum.querySelectorAll('.chapter')).indexOf(lesson.closest('.chapter')) + 1;
     lessonNumber.textContent = `CHAPTER ${String(chapterNumber).padStart(2, '0')} · LESSON ${lesson.dataset.lessonNumber.padStart(2, '0')}`;
     lessonTitle.textContent = lesson.dataset.lessonTitle;
-    startWatermarkSchedule();
   }
 
   curriculum.addEventListener('click', event => {
