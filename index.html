@@ -699,6 +699,54 @@
   let watermarkHideTimeout;
   let watermarkCycleTimeout;
 
+  const firebaseConfig = {
+    apiKey: 'AIzaSyAFFtV8WXL0X0TVuVfQ_xamt-MlCb68o-4',
+    authDomain: 'super-threads-class-90b93.firebaseapp.com',
+    projectId: 'super-threads-class-90b93',
+    storageBucket: 'super-threads-class-90b93.firebasestorage.app',
+    messagingSenderId: '949821320016',
+    appId: '1:949821320016:web:308b0689da572de0ba1a55'
+  };
+
+  window.firebaseApprovalReady = Promise.all([
+    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js'),
+    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js'),
+    import('https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js')
+  ]).then(([appSdk, authSdk, firestoreSdk]) => {
+    const app = appSdk.initializeApp(firebaseConfig);
+    const auth = authSdk.getAuth(app);
+    const db = firestoreSdk.getFirestore(app);
+
+    return async googleIdToken => {
+      const credential = authSdk.GoogleAuthProvider.credential(googleIdToken);
+      const { user } = await authSdk.signInWithCredential(auth, credential);
+      const email = user.email?.trim();
+      if (!email) throw new Error('Firebase Authentication returned no email.');
+
+      try {
+        const studentDocument = await firestoreSdk.getDoc(firestoreSdk.doc(db, 'students', email));
+        if (!studentDocument.exists()) {
+          await authSdk.signOut(auth);
+          return { approved: false, email };
+        }
+
+        const student = studentDocument.data();
+        if (student.approved !== true) {
+          await authSdk.signOut(auth);
+          return { approved: false, email };
+        }
+
+        return { approved: true, email, name: student.name };
+      } catch (error) {
+        await authSdk.signOut(auth).catch(() => {});
+        throw error;
+      }
+    };
+  }).catch(error => {
+    console.error('[Firebase Approval] SDK initialization failed.', error);
+    throw error;
+  });
+
   function maskEmail(email) {
     const [localPart, domain] = email.split('@');
     const visiblePrefix = localPart.slice(0, Math.min(2, localPart.length));
@@ -744,8 +792,16 @@
     showWatermark();
   }
 
-  function handleGoogleCredential(response) {
+  async function handleGoogleCredential(response) {
     console.log('[Google Login] Credential callback received.');
+    document.body.classList.remove('authenticated');
+    clearTimeout(watermarkHideTimeout);
+    clearTimeout(watermarkCycleTimeout);
+    watermarkHideTimeout = null;
+    watermarkCycleTimeout = null;
+    watermark.hidden = true;
+    loginStatus.textContent = 'Google 로그인 및 수강 승인을 확인하고 있습니다...';
+
     try {
       const encodedPayload = response.credential.split('.')[1];
       const base64Payload = encodedPayload.replace(/-/g, '+').replace(/_/g, '/');
@@ -755,17 +811,35 @@
         throw new Error('Verified Google email is required.');
       }
 
-      signedInName = profile.name || profile.email;
-      signedInEmail = profile.email;
+      const verifyStudent = await window.firebaseApprovalReady;
+      const approval = await verifyStudent(response.credential);
+      if (!approval.approved) {
+        signedInName = '';
+        signedInEmail = '';
+        loginStatus.textContent = '등록되지 않은 수강생입니다.\n관리자에게 수강 승인을 요청해주세요.';
+        console.log('[Firebase Approval] Student is not approved.', { email: approval.email });
+        return;
+      }
+
+      signedInName = approval.name || profile.name || approval.email;
+      signedInEmail = approval.email;
       document.getElementById('student-name').textContent = signedInName;
-      document.getElementById('student-email').textContent = profile.email;
+      document.getElementById('student-email').textContent = signedInEmail;
       document.body.classList.add('authenticated');
       loginStatus.textContent = '';
       restartWatermarkCycle();
-      console.log('[Google Login] Sign-in succeeded.', { name: signedInName, email: signedInEmail });
+      console.log('[Firebase Approval] Student approved.', { name: signedInName, email: signedInEmail });
     } catch (error) {
-      console.log('[Google Login] Sign-in failed while processing credentials.', error);
-      loginStatus.textContent = 'Google 계정 정보를 확인하지 못했습니다. 다시 로그인해 주세요.';
+      document.body.classList.remove('authenticated');
+      clearTimeout(watermarkHideTimeout);
+      clearTimeout(watermarkCycleTimeout);
+      watermarkHideTimeout = null;
+      watermarkCycleTimeout = null;
+      watermark.hidden = true;
+      signedInName = '';
+      signedInEmail = '';
+      loginStatus.textContent = '수강 승인 확인에 실패했습니다. 잠시 후 다시 시도해주세요.';
+      console.log('[Firebase Approval] Authentication or approval lookup failed.', error);
     }
   }
 
