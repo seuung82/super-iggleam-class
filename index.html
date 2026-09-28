@@ -696,7 +696,6 @@
   const watermark = document.getElementById('email-watermark');
   let signedInName = '';
   let signedInEmail = '';
-  let watermarkInterval;
   let watermarkTimeout;
 
   function maskEmail(email) {
@@ -708,6 +707,9 @@
   function hideEmailWatermark() {
     watermark.hidden = true;
     watermarkTimeout = null;
+    if (signedInEmail && document.body.classList.contains('authenticated')) {
+      watermarkTimeout = setTimeout(showEmailWatermark, 240000);
+    }
   }
 
   function showEmailWatermark() {
@@ -718,10 +720,10 @@
   }
 
   function startWatermarkSchedule() {
-    clearInterval(watermarkInterval);
     clearTimeout(watermarkTimeout);
+    watermarkTimeout = null;
+    watermark.hidden = true;
     showEmailWatermark();
-    watermarkInterval = setInterval(showEmailWatermark, 240000);
   }
 
   function handleGoogleCredential(response) {
@@ -777,9 +779,9 @@
   }
 
   signOutButton.addEventListener('click', () => {
-    clearInterval(watermarkInterval);
     clearTimeout(watermarkTimeout);
-    hideEmailWatermark();
+    watermarkTimeout = null;
+    watermark.hidden = true;
     signedInName = '';
     signedInEmail = '';
     document.body.classList.remove('authenticated');
@@ -816,6 +818,7 @@
     const chapterNumber = Array.from(curriculum.querySelectorAll('.chapter')).indexOf(lesson.closest('.chapter')) + 1;
     lessonNumber.textContent = `CHAPTER ${String(chapterNumber).padStart(2, '0')} · LESSON ${lesson.dataset.lessonNumber.padStart(2, '0')}`;
     lessonTitle.textContent = lesson.dataset.lessonTitle;
+    startWatermarkSchedule();
   }
 
   curriculum.addEventListener('click', event => {
