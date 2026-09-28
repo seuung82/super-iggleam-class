@@ -30,7 +30,10 @@
     body:not(.authenticated) > header,
     body:not(.authenticated) > .hero,
     body:not(.authenticated) > .notice,
-    body:not(.authenticated) > main,
+    body:not(.authenticated) > main {
+      display: none;
+    }
+
     #login-gate {
       min-height: 100vh;
       display: grid;
@@ -114,7 +117,9 @@
 
     #email-watermark:not([hidden]) {
       position: absolute;
-      z-index: 2;
+      z-index: 9999;
+      top: 12px;
+      left: 12px;
       max-width: calc(100% - 24px);
       padding: 7px 10px;
       border-radius: 4px;
@@ -126,26 +131,6 @@
       overflow-wrap: anywhere;
       opacity: .6;
       pointer-events: none;
-    }
-
-    #email-watermark.watermark-top-left {
-      top: 12px;
-      left: 12px;
-    }
-
-    #email-watermark.watermark-top-right {
-      top: 12px;
-      right: 12px;
-    }
-
-    #email-watermark.watermark-bottom-left {
-      bottom: 12px;
-      left: 12px;
-    }
-
-    #email-watermark.watermark-bottom-right {
-      right: 12px;
-      bottom: 12px;
     }
 
     header {
@@ -703,11 +688,8 @@
   const loginStatus = document.getElementById('login-status');
   const signOutButton = document.getElementById('sign-out');
   const watermark = document.getElementById('email-watermark');
-  const watermarkPositions = ['watermark-top-left', 'watermark-top-right', 'watermark-bottom-left', 'watermark-bottom-right'];
   let signedInName = '';
   let signedInEmail = '';
-  let watermarkInterval;
-  let watermarkTimeout;
 
   function maskEmail(email) {
     const [localPart, domain] = email.split('@');
@@ -715,10 +697,7 @@
     return `${visiblePrefix}***@${domain}`;
   }
 
-  function showEmailWatermark(duration = 6000) {
-    const position = watermarkPositions[Math.floor(Math.random() * watermarkPositions.length)];
-    watermark.classList.remove(...watermarkPositions);
-    watermark.classList.add(position);
+  function showEmailWatermark() {
     watermark.innerHTML = '';
     const nameLine = document.createElement('span');
     nameLine.textContent = signedInName;
@@ -731,16 +710,6 @@
       watermark.appendChild(line);
     });
     watermark.hidden = false;
-    clearTimeout(watermarkTimeout);
-    watermarkTimeout = setTimeout(() => {
-      watermark.hidden = true;
-    }, duration);
-  }
-
-  function startWatermarkSchedule() {
-    clearInterval(watermarkInterval);
-    showEmailWatermark(10000);
-    watermarkInterval = setInterval(() => showEmailWatermark(6000), 4 * 60 * 1000);
   }
 
   function handleGoogleCredential(response) {
@@ -760,7 +729,7 @@
       document.getElementById('student-email').textContent = profile.email;
       document.body.classList.add('authenticated');
       loginStatus.textContent = '';
-      startWatermarkSchedule();
+      showEmailWatermark();
       console.log('[Google Login] Sign-in succeeded.', { name: signedInName, email: signedInEmail });
     } catch (error) {
       console.log('[Google Login] Sign-in failed while processing credentials.', error);
@@ -796,8 +765,6 @@
   }
 
   signOutButton.addEventListener('click', () => {
-    clearInterval(watermarkInterval);
-    clearTimeout(watermarkTimeout);
     watermark.hidden = true;
     signedInName = '';
     signedInEmail = '';
