@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SUPER 이끌림 | 온라인 클래스</title>
-
   <style>
     * {
       box-sizing: border-box;
@@ -26,6 +25,105 @@
       background: var(--page);
       color: var(--navy);
       -webkit-font-smoothing: antialiased;
+    }
+
+    body:not(.authenticated) > header,
+    body:not(.authenticated) > .hero,
+    body:not(.authenticated) > .notice,
+    body:not(.authenticated) > main,
+    body:not(.authenticated) > #email-watermark {
+      display: none;
+    }
+
+    #login-gate {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .login-panel {
+      width: min(100%, 420px);
+      padding: 30px 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(18, 35, 58, .035);
+    }
+
+    .login-panel img {
+      width: 90px;
+      height: 70px;
+      object-fit: contain;
+      margin: 0 auto 14px;
+    }
+
+    .login-panel h1 {
+      font-size: 22px;
+      margin-bottom: 8px;
+      white-space: normal;
+    }
+
+    .login-panel p {
+      color: #66758a;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    #google-signin-button {
+      display: flex;
+      justify-content: center;
+      min-height: 44px;
+    }
+
+    #login-status {
+      min-height: 20px;
+      margin: 12px 0 0;
+      color: #68778b;
+      font-size: 12px;
+    }
+
+    .student-profile {
+      display: block;
+      max-width: min(42vw, 320px);
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+    }
+
+    .student-email {
+      display: block;
+      font-size: 10px;
+      font-weight: 500;
+    }
+
+    .sign-out {
+      border: 0;
+      background: transparent;
+      color: var(--blue);
+      font: inherit;
+      font-size: 11px;
+      cursor: pointer;
+      margin-left: 8px;
+    }
+
+    #email-watermark:not([hidden]) {
+      position: fixed;
+      z-index: 20;
+      left: 50%;
+      max-width: calc(100vw - 32px);
+      padding: 7px 12px;
+      transform: translateX(-50%);
+      border-radius: 4px;
+      background: rgba(7, 17, 31, .72);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.4;
+      text-align: center;
+      overflow-wrap: anywhere;
+      opacity: .6;
+      pointer-events: none;
     }
 
     header {
@@ -345,6 +443,23 @@
     }
 
     @media(max-width: 520px) {
+      .login-panel {
+        padding: 25px 18px;
+      }
+
+      .student-profile {
+        max-width: 48vw;
+        font-size: 10px;
+      }
+
+      .student-email {
+        font-size: 9px;
+      }
+
+      #email-watermark:not([hidden]) {
+        font-size: 11px;
+      }
+
       header {
         height: 62px;
         padding: 0 17px;
@@ -408,11 +523,24 @@
 
 <body>
 
+<section id="login-gate" aria-labelledby="login-title">
+  <div class="login-panel">
+    <img src="logo.png" alt="수퍼이끌림 로고">
+    <h1 id="login-title">수강생 로그인</h1>
+    <p>Google 계정으로 로그인해 강의 페이지에 입장하세요.</p>
+    <div id="google-signin-button"></div>
+    <p id="login-status" role="status" aria-live="polite"></p>
+  </div>
+</section>
+
 <header>
 <div class="logo">
   <img src="logo.png" alt="수퍼이끌림 로고">
 </div>
-  <div class="student">수강생 전용 클래스</div>
+  <div class="student">
+    <span class="student-profile"><span id="student-name"></span><span class="student-email" id="student-email"></span></span>
+    <button class="sign-out" id="sign-out" type="button">로그아웃</button>
+  </div>
 </header>
 
 <section class="hero">
@@ -492,60 +620,152 @@
       <div class="lesson" data-video-id="1dsA_gGgnezClyWfXWt_buEV_BjobZk3N" data-lesson-number="2" data-lesson-title="제휴마케팅 계정 세팅법" role="button" tabindex="0"><div class="play">▶</div><div>02. 제휴마케팅 계정 세팅법</div></div>
       <div class="lesson" data-video-id="1dOOelYL9it7X1fQ-XP1SXXLxF0nD58De" data-lesson-number="3" data-lesson-title="프로필세팅, 인포크링크 세팅" role="button" tabindex="0"><div class="play">▶</div><div>03. 프로필세팅, 인포크링크 세팅</div></div>
       <div class="lesson" data-video-id="16uNDntST69gmUciJNjxz38TV-oyvN9wu" data-lesson-number="4" data-lesson-title="업로드할 동영상 받는 방법, 선택 방법" role="button" tabindex="0"><div class="play">▶</div><div>04. 업로드할 동영상 받는 방법, 선택 방법</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>05. 계정 정지당하지 않는 방법 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>06. 쿠팡파트너스 가입 및 소싱사이트 소개 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>07. 저작권 파괴하기(AI 이미지 변형) · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>08. 저작권 파괴하기 심화 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>09. 소싱 쉽게 하는 방법 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>10. 글 잘쓰는 방법 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>11. 게시글 및 댓글 작성방법 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>12. 소싱 좋은예/나쁜예 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>13. 잘 터지는 물건 고르기 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>14. 오프라인 소싱법 · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="1Vx4Lx0O5-Jx1PlbX7W-hA8qfv9AS3xVm" data-lesson-number="5" data-lesson-title="계정 정지당하지 않는 방법" role="button" tabindex="0"><div class="play">▶</div><div>05. 계정 정지당하지 않는 방법</div></div>
+      <div class="lesson" data-video-id="1elgUw2emgTW8xg6AZjWki4Ao4mIVXjIZ" data-lesson-number="6" data-lesson-title="쿠팡파트너스 가입 및 소싱사이트 소개" role="button" tabindex="0"><div class="play">▶</div><div>06. 쿠팡파트너스 가입 및 소싱사이트 소개</div></div>
+      <div class="lesson" data-video-id="1gd0ouwEIkQoDJh6h6zfj2cEF3CkQnTMC" data-lesson-number="7" data-lesson-title="저작권 파괴하기(AI 이미지 변형)" role="button" tabindex="0"><div class="play">▶</div><div>07. 저작권 파괴하기(AI 이미지 변형)</div></div>
+      <div class="lesson" data-video-id="1yH6j2PNLPam2bwQJRJIsEwuS6CCNCPPh" data-lesson-number="8" data-lesson-title="저작권 파괴하기 심화" role="button" tabindex="0"><div class="play">▶</div><div>08. 저작권 파괴하기 심화</div></div>
+      <div class="lesson" data-video-id="1DrR9Ra7n7GIGNG62MZicWAzTPWxA_3F-" data-lesson-number="9" data-lesson-title="소싱 쉽게 하는 방법" role="button" tabindex="0"><div class="play">▶</div><div>09. 소싱 쉽게 하는 방법</div></div>
+      <div class="lesson" data-video-id="1ftCc9iv0Oy66YdLyjVc9nDWb8kfeUBfK" data-lesson-number="10" data-lesson-title="글 잘쓰는 방법" role="button" tabindex="0"><div class="play">▶</div><div>10. 글 잘쓰는 방법</div></div>
+      <div class="lesson" data-video-id="18wp_p415u2YAY7OLkZKGy9rFjQ0kJoqT" data-lesson-number="11" data-lesson-title="게시글 및 댓글 작성방법" role="button" tabindex="0"><div class="play">▶</div><div>11. 게시글 및 댓글 작성방법</div></div>
+      <div class="lesson" data-video-id="1LsSKsz6KyhIuFvClfG6pN4yeP3GMbGwx" data-lesson-number="12" data-lesson-title="소싱 좋은예/나쁜예" role="button" tabindex="0"><div class="play">▶</div><div>12. 소싱 좋은예/나쁜예</div></div>
+      <div class="lesson" data-video-id="1PQNJr0UFYyrkyzv-FWBTsWj-wgEIDJG-" data-lesson-number="13" data-lesson-title="잘 터지는 물건 고르기" role="button" tabindex="0"><div class="play">▶</div><div>13. 잘 터지는 물건 고르기</div></div>
+      <div class="lesson" data-video-id="1045rJWt6N3p6alG1V5v1pi5fMDeKamkR" data-lesson-number="14" data-lesson-title="오프라인 소싱법" role="button" tabindex="0"><div class="play">▶</div><div>14. 오프라인 소싱법</div></div>
     </div>
 
     <div class="chapter">
       <div class="chapter-name">CHAPTER 2 · 전문계정(X, 스레드) — 6강</div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 전문계정이란 무엇인가? · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>02. 스레드 스하리, 반하리의 함정 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>03. X 수익화는 이렇게 이루어진다 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>04. X 계정 키우는 노하우 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>05. X와 스레드 동시 운영방법 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>06. AI 생성기로 3분안에 X, 스레드 동시발행 · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="1rJ0OJtHj9Wt629cuOTQDcfuIKK5pBz3S" data-lesson-number="1" data-lesson-title="전문계정이란 무엇인가?" role="button" tabindex="0"><div class="play">▶</div><div>01. 전문계정이란 무엇인가?</div></div>
+      <div class="lesson" data-video-id="1peFa9j_qBI9dK5yt13yW9O6dq3ZeYF4L" data-lesson-number="2" data-lesson-title="스레드 스하리, 반하리의 함정" role="button" tabindex="0"><div class="play">▶</div><div>02. 스레드 스하리, 반하리의 함정</div></div>
+      <div class="lesson" data-video-id="1iLYOjMXETrBRtNP549MiKTdh1F9KKCiy" data-lesson-number="3" data-lesson-title="X 수익화는 이렇게 이루어진다" role="button" tabindex="0"><div class="play">▶</div><div>03. X 수익화는 이렇게 이루어진다</div></div>
+      <div class="lesson" data-video-id="1CsyflfLYb3poWZGvucAT3FhQ58-vINa9" data-lesson-number="4" data-lesson-title="X 계정 키우는 노하우" role="button" tabindex="0"><div class="play">▶</div><div>04. X 계정 키우는 노하우</div></div>
+      <div class="lesson" data-video-id="1jq9rPs976fUqN5fWlvg1qCD8nfPqq1F4" data-lesson-number="5" data-lesson-title="X와 스레드 동시 운영방법" role="button" tabindex="0"><div class="play">▶</div><div>05. X와 스레드 동시 운영방법</div></div>
+      <div class="lesson" data-video-id="1xEiUuEbkwlzLEGYR70c_8iF2LO7e0nR7" data-lesson-number="6" data-lesson-title="AI 생성기로 3분안에 X, 스레드 동시발행" role="button" tabindex="0"><div class="play">▶</div><div>06. AI 생성기로 3분안에 X, 스레드 동시발행</div></div>
     </div>
 
     <div class="chapter">
       <div class="chapter-name">CHAPTER 3 · 유튜브 운영하기 — 7강</div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 유튜브 운영하기 · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="10dr3sPHrv46OCEZnfFeQbvxewFnCcINh" data-lesson-number="1" data-lesson-title="유튜브 운영하기" role="button" tabindex="0"><div class="play">▶</div><div>01. 유튜브 운영하기</div></div>
       <div class="lesson disabled"><div class="lock">🔒</div><div>02. 로고만들기, 5분 쇼츠 제작 프로그램 사용법 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>03. 쇼츠 5분만에 만들기 시연 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>04. 롱폼 대본 만들기(AI) · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>05. 롱폼 이미지 생성 방법(AI) · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>06. 롱폼 나레이션 생성방법(AI) · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="1xmfVOChG0QOJRe65_dEDal3-ywoe0AcU" data-lesson-number="3" data-lesson-title="쇼츠 5분만에 만들기 시연" role="button" tabindex="0"><div class="play">▶</div><div>03. 쇼츠 5분만에 만들기 시연</div></div>
+      <div class="lesson" data-video-id="1uj60kLZ5jbUOZz2gfWpMi-dwCoRCdloF" data-lesson-number="4" data-lesson-title="롱폼 대본 만들기(AI)" role="button" tabindex="0"><div class="play">▶</div><div>04. 롱폼 대본 만들기(AI)</div></div>
+      <div class="lesson" data-video-id="10XeIFk4eO-mz6JpIln1jYytCGjABMmS3" data-lesson-number="5" data-lesson-title="롱폼 이미지 생성 방법(AI)" role="button" tabindex="0"><div class="play">▶</div><div>05. 롱폼 이미지 생성 방법(AI)</div></div>
+      <div class="lesson" data-video-id="11qJbK3ck_0_LAYiCZYDMzPEU8yfj27gh" data-lesson-number="6" data-lesson-title="롱폼 나레이션 생성방법(AI)" role="button" tabindex="0"><div class="play">▶</div><div>06. 롱폼 나레이션 생성방법(AI)</div></div>
       <div class="lesson disabled"><div class="lock">🔒</div><div>07. 롱폼 만들기 시연 · 강의 준비중</div></div>
     </div>
 
     <div class="chapter">
       <div class="chapter-name">CHAPTER 4 · 네이버 쇼핑 커넥트 운영 — 4강</div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 네이버 쇼핑 커넥트란? · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>02. 네이버 블로그 작성법 · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="11TVnXtczPvOOfdUPC3aP1P98uq6cqwzH" data-lesson-number="1" data-lesson-title="네이버 쇼핑 커넥트란?" role="button" tabindex="0"><div class="play">▶</div><div>01. 네이버 쇼핑 커넥트란?</div></div>
+      <div class="lesson" data-video-id="1xfP5JV5U-8XdeuROowqJc9X0fhbyKuxk" data-lesson-number="2" data-lesson-title="네이버 블로그 작성법" role="button" tabindex="0"><div class="play">▶</div><div>02. 네이버 블로그 작성법</div></div>
       <div class="lesson disabled"><div class="lock">🔒</div><div>03. 키워드 분석 및 삽입법 · 강의 준비중</div></div>
       <div class="lesson disabled"><div class="lock">🔒</div><div>04. 쇼핑커넥트 적용하기 · 강의 준비중</div></div>
     </div>
 
     <div class="chapter">
       <div class="chapter-name">CHAPTER 5 · 보너스 강의 — 6강</div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>01. 전자책 쓰는 방법, 판매방법 · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="1GQiBkK06EuL1O2-3ZsVXz-HvAP8jmgfx" data-lesson-number="1" data-lesson-title="전자책 쓰는 방법, 판매방법" role="button" tabindex="0"><div class="play">▶</div><div>01. 전자책 쓰는 방법, 판매방법</div></div>
       <div class="lesson disabled"><div class="lock">🔒</div><div>02. 나만의 챗봇 만드는 방법 시연 · 강의 준비중</div></div>
       <div class="lesson disabled"><div class="lock">🔒</div><div>03. 나만의 소싱 챗봇 만들기 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>04. 클릭을 부르는 첫줄 후킹 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>05. 터지는 물품은 따로 있다 · 강의 준비중</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>06. 스토리텔링의 중요성 · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="1oAnnZ8E5BPKTM8zukCRh0OKJ1iEXXC0D" data-lesson-number="4" data-lesson-title="클릭을 부르는 첫줄 후킹" role="button" tabindex="0"><div class="play">▶</div><div>04. 클릭을 부르는 첫줄 후킹</div></div>
+      <div class="lesson" data-video-id="18S03mSoEFJFg7q7QBr1360ygbL6Du7XG" data-lesson-number="5" data-lesson-title="터지는 물품은 따로 있다" role="button" tabindex="0"><div class="play">▶</div><div>05. 터지는 물품은 따로 있다</div></div>
+      <div class="lesson" data-video-id="1T_DSTTxTi1MiQqwfa4DzHZ3vzeEw8y-7" data-lesson-number="6" data-lesson-title="스토리텔링의 중요성" role="button" tabindex="0"><div class="play">▶</div><div>06. 스토리텔링의 중요성</div></div>
     </div>
 
   </aside>
 
 </main>
+
+<div id="email-watermark" hidden aria-hidden="true"></div>
+
+<script>
+  const CLIENT_ID = '574191607948-cj3pstcqg74gsm5mm2no1kp1v1i7jdk8.apps.googleusercontent.com';
+  const loginStatus = document.getElementById('login-status');
+  const signOutButton = document.getElementById('sign-out');
+  const watermark = document.getElementById('email-watermark');
+  let signedInEmail = '';
+  let watermarkInterval;
+  let watermarkTimeout;
+
+  function showEmailWatermark() {
+    const showAtTop = Math.random() < 0.5;
+    watermark.textContent = signedInEmail;
+    watermark.style.top = showAtTop ? '86px' : 'auto';
+    watermark.style.bottom = showAtTop ? 'auto' : '24px';
+    watermark.hidden = false;
+    clearTimeout(watermarkTimeout);
+    watermarkTimeout = setTimeout(() => {
+      watermark.hidden = true;
+    }, 5000);
+  }
+
+  function startWatermarkSchedule() {
+    clearInterval(watermarkInterval);
+    watermarkInterval = setInterval(showEmailWatermark, 4 * 60 * 1000);
+  }
+
+  function handleGoogleCredential(response) {
+    try {
+      const encodedPayload = response.credential.split('.')[1];
+      const base64Payload = encodedPayload.replace(/-/g, '+').replace(/_/g, '/');
+      const payloadBytes = Uint8Array.from(atob(base64Payload), character => character.charCodeAt(0));
+      const profile = JSON.parse(new TextDecoder().decode(payloadBytes));
+      if (!profile.email || profile.email_verified !== true) {
+        throw new Error('Verified Google email is required.');
+      }
+
+      signedInEmail = profile.email;
+      document.getElementById('student-name').textContent = profile.name || profile.email;
+      document.getElementById('student-email').textContent = profile.email;
+      document.body.classList.add('authenticated');
+      loginStatus.textContent = '';
+      startWatermarkSchedule();
+    } catch (error) {
+      loginStatus.textContent = 'Google 계정 정보를 확인하지 못했습니다. 다시 로그인해 주세요.';
+    }
+  }
+
+  function initializeGoogleLogin() {
+    if (!window.google?.accounts?.id) {
+      loginStatus.textContent = 'Google 로그인 서비스를 불러오지 못했습니다. 페이지를 새로고침해 주세요.';
+      return;
+    }
+
+    google.accounts.id.initialize({
+      client_id: CLIENT_ID,
+      callback: handleGoogleCredential
+    });
+    google.accounts.id.renderButton(document.getElementById('google-signin-button'), {
+      type: 'standard',
+      theme: 'outline',
+      size: 'large',
+      text: 'signin_with',
+      shape: 'rectangular',
+      logo_alignment: 'left',
+      width: String(Math.min(280, window.innerWidth - 48)),
+      locale: 'ko'
+    });
+  }
+
+  signOutButton.addEventListener('click', () => {
+    clearInterval(watermarkInterval);
+    clearTimeout(watermarkTimeout);
+    watermark.hidden = true;
+    signedInEmail = '';
+    document.body.classList.remove('authenticated');
+    document.getElementById('student-name').textContent = '';
+    document.getElementById('student-email').textContent = '';
+    if (window.google?.accounts?.id) google.accounts.id.disableAutoSelect();
+  });
+
+  const googleIdentityScript = document.createElement('script');
+  googleIdentityScript.src = 'https://accounts.google.com/gsi/client';
+  googleIdentityScript.async = true;
+  googleIdentityScript.onload = initializeGoogleLogin;
+  googleIdentityScript.onerror = () => {
+    loginStatus.textContent = 'Google 로그인 서비스를 불러오지 못했습니다. 페이지를 새로고침해 주세요.';
+  };
+  document.head.appendChild(googleIdentityScript);
+</script>
 
 <script>
   const curriculum = document.querySelector('.curriculum');
@@ -561,7 +781,8 @@
     });
     lesson.classList.add('active');
     videoFrame.src = `https://drive.google.com/file/d/${lesson.dataset.videoId}/preview`;
-    lessonNumber.textContent = `CHAPTER 01 · LESSON ${lesson.dataset.lessonNumber.padStart(2, '0')}`;
+    const chapterNumber = Array.from(curriculum.querySelectorAll('.chapter')).indexOf(lesson.closest('.chapter')) + 1;
+    lessonNumber.textContent = `CHAPTER ${String(chapterNumber).padStart(2, '0')} · LESSON ${lesson.dataset.lessonNumber.padStart(2, '0')}`;
     lessonTitle.textContent = lesson.dataset.lessonTitle;
   }
 
