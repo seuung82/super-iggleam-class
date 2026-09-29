@@ -300,6 +300,98 @@
       border: 0;
     }
 
+    .drive-help {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 12px;
+      padding: 14px 16px 14px 18px;
+      background: linear-gradient(135deg, #f7faff 0%, #eef4ff 100%);
+      border: 1px solid #d6e3fa;
+      border-radius: 12px;
+      box-shadow: 0 4px 14px rgba(40, 100, 215, 0.08);
+    }
+
+    .drive-help-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .drive-help-icon {
+      flex: none;
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid #d6e3fa;
+      color: var(--blue);
+      font-size: 11px;
+      padding-left: 2px;
+    }
+
+    .drive-help-title {
+      color: var(--navy);
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .drive-help-sub {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .drive-open {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 10px 18px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 650;
+      text-decoration: none;
+      white-space: nowrap;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(40, 100, 215, 0.25);
+      transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .drive-open:hover {
+      background: #1f55b4;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(40, 100, 215, 0.3);
+    }
+
+    .drive-open[aria-disabled="true"] {
+      background: #b8c4d6;
+      box-shadow: none;
+      pointer-events: none;
+    }
+
+    @media(max-width: 600px) {
+      .drive-help {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .drive-open {
+        width: 100%;
+        padding: 12px 18px;
+      }
+    }
+
     .lesson-info {
       padding: 22px 8px 9px;
     }
@@ -604,6 +696,17 @@
       <div id="email-watermark" hidden aria-hidden="true"></div>
     </div>
 
+    <div class="drive-help">
+      <div class="drive-help-text">
+        <span class="drive-help-icon" aria-hidden="true">▶</span>
+        <div>
+          <p class="drive-help-title">영상이 재생되지 않나요?</p>
+          <p class="drive-help-sub">Google 계정 문제일 수 있습니다.</p>
+        </div>
+      </div>
+      <a class="drive-open" id="drive-open-link" target="_blank" rel="noopener noreferrer" aria-disabled="true">Drive에서 바로 시청하기 →</a>
+    </div>
+
     <div class="lesson-info">
       <div class="lesson-number">CHAPTER 01 · LESSON 01</div>
 
@@ -670,7 +773,7 @@
     <div class="chapter">
       <div class="chapter-name">CHAPTER 4 · 네이버 쇼핑 커넥트 운영 — 4강</div>
       <div class="lesson" data-video-id="11TVnXtczPvOOfdUPC3aP1P98uq6cqwzH" data-lesson-number="1" data-lesson-title="네이버 쇼핑 커넥트란?" role="button" tabindex="0"><div class="play">▶</div><div>01. 네이버 쇼핑 커넥트란?</div></div>
-      <div class="lesson disabled"><div class="lock">🔒</div><div>02. 키워드 분석 및 삽입법 · 강의 준비중</div></div>
+      <div class="lesson" data-video-id="1xfP5JV5U-8XdeuROowqJc9X0fhbyKuxk" data-lesson-number="2" data-lesson-title="키워드 분석 및 삽입법" role="button" tabindex="0"><div class="play">▶</div><div>02. 키워드 분석 및 삽입법</div></div>
       <div class="lesson" data-video-id="1t3Z4wwFSwZ1RESOj2ZmGW1eDFyqk-ZZX" data-lesson-number="3" data-lesson-title="네이버 블로그 작성법" role="button" tabindex="0"><div class="play">▶</div><div>03. 네이버 블로그 작성법</div></div>
       <div class="lesson disabled"><div class="lock">🔒</div><div>04. 쇼핑커넥트 적용하기 · 강의 준비중</div></div>
     </div>
@@ -965,17 +1068,37 @@
 <script>
   const curriculum = document.querySelector('.curriculum');
   const videoFrame = document.querySelector('.video-wrap iframe');
+  const driveOpenLink = document.getElementById('drive-open-link');
   const lessonNumber = document.querySelector('.lesson-number');
   const lessonTitle = document.querySelector('.lesson-info h2');
 
+  function updateDriveOpenLink(lesson) {
+    const videoId = lesson?.dataset.videoId;
+    if (!videoId) {
+      driveOpenLink.removeAttribute('href');
+      driveOpenLink.setAttribute('aria-disabled', 'true');
+      return;
+    }
+
+    driveOpenLink.href = `https://drive.google.com/file/d/${videoId}/view`;
+    driveOpenLink.removeAttribute('aria-disabled');
+  }
+
+  updateDriveOpenLink(curriculum.querySelector('.lesson.active'));
+
   function selectLesson(lesson) {
-    if (!lesson || !lesson.dataset.videoId) return;
+    if (!lesson) return;
+    if (!lesson.dataset.videoId) {
+      updateDriveOpenLink(null);
+      return;
+    }
 
     curriculum.querySelectorAll('.lesson.active').forEach(activeLesson => {
       activeLesson.classList.remove('active');
     });
     lesson.classList.add('active');
     videoFrame.src = `https://drive.google.com/file/d/${lesson.dataset.videoId}/preview`;
+    updateDriveOpenLink(lesson);
     restartWatermarkCycle();
     const chapterNumber = Array.from(curriculum.querySelectorAll('.chapter')).indexOf(lesson.closest('.chapter')) + 1;
     lessonNumber.textContent = `CHAPTER ${String(chapterNumber).padStart(2, '0')} · LESSON ${lesson.dataset.lessonNumber.padStart(2, '0')}`;
